@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bank Simulator</title>
+    <link rel="stylesheet" href="banka2.css">
+</head>
+<body>
+    <div class="container" id="loginScreen">
+        <header>
+            <h1>Bank Simulator</h1>
+        </header>
+        <main>
+            <input type="text" id="loginUsername" placeholder="Enter your username" class="input-style"><br>
+            <input type="password" id="loginPassword" placeholder="Enter your password" class="input-style"><br>
+            <button class="banka-btn" onclick="login()">Login</button>
+            <button class="sifremi-unuttum" onclick="forgotPassword()">Forgot Password?</button>
+            <div id="loginResult" style="margin-top:20px;color:#e74c3c;"></div>
+        </main>
+    </div>
+    <div class="container atm-style" id="bankScreen" style="display:none;">
+        <header>
+            <h1>Bank Simulator</h1>
+        </header>
+        <main>
+            <div class="atm-row">
+                <div class="atm-col">
+                    <div class="atm-option">
+                        <button class="atm-side-btn left" onclick="withdraw()"><</button>
+                        <span>Withdraw Money</span>
+                    </div>
+                    <div class="atm-option">
+                        <button class="atm-side-btn left" onclick="deposit()"><</button>
+                        <span>Deposit Money</span>
+                    </div>
+                    <div class="atm-option">
+                        <button class="atm-side-btn left" onclick="showLastTransactions()"><</button>
+                        <span>Last 5 Transactions</span>
+                    </div>
+                </div>
+                <div class="atm-screen">
+                    <div id="result" class="atm-sonuc"></div>
+                </div>
+                <div class="atm-col">
+                    <div class="atm-option">
+                        <span>Check Balance</span>
+                        <button class="atm-side-btn right" onclick="checkBalance()">></button>
+                    </div>
+                    <div class="atm-option">
+                        <span>Change Password</span>
+                        <button class="atm-side-btn right" onclick="changePassword()">></button>
+                    </div>
+                    <div class="atm-option">
+                        <span>Logout</span>
+                        <button class="atm-side-btn right" onclick="logout()">></button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let balance = 30000;
+        let transactions = [];
+        let correctUsername = "admin";
+        let password = "1234";
+
+        function login() {
+            let enteredUsername = document.getElementById("loginUsername").value;
+            let enteredPassword = document.getElementById("loginPassword").value;
+
+            if (enteredUsername === correctUsername && enteredPassword === password) {
+                document.getElementById("loginScreen").style.display = "none";
+                document.getElementById("bankScreen").style.display = "block";
+                document.getElementById("loginResult").innerText = "";
+            } else {
+                document.getElementById("loginResult").innerText = "Incorrect username or password!";
+            }
+        }
+
+        function withdraw() {
+            let amount = parseInt(prompt("Enter the amount to withdraw:"));
+            if (isNaN(amount)) return;
+            if (amount > balance) {
+                document.getElementById("result").innerText = "Insufficient balance! Your current balance: " + balance + " TL";
+            } else {
+                balance -= amount;
+                transactions.push(amount + " TL withdrawn.");
+                document.getElementById("result").innerText = "Amount withdrawn: " + amount + " TL\nRemaining balance: " + balance + " TL";
+            }
+        }
+
+        function deposit() {
+            let amount = parseInt(prompt("Enter the amount to deposit:"));
+            if (isNaN(amount)) return;
+            balance += amount;
+            transactions.push(amount + " TL deposited.");
+            document.getElementById("result").innerText = amount + " TL deposited. New balance: " + balance + " TL";
+        }
+
+        function checkBalance() {
+            document.getElementById("result").innerText = "Your current balance: " + balance + " TL";
+        }
+
+        function showLastTransactions() {
+            let text = "Last 5 transactions:\n";
+            let last5 = transactions.slice(-5);
+            if (last5.length === 0) {
+                text += "No transactions yet.";
+            } else {
+                text += last5.join("\n");
+            }
+            document.getElementById("result").innerText = text;
+        }
+
+        function changePassword() {
+            let newPassword = prompt("Enter your new password:");
+            if (newPassword) {
+                password = newPassword;
+                transactions.push("Password changed.");
+                document.getElementById("result").innerText = "Password successfully changed.";
+            }
+        }
+
+        function forgotPassword() {
+            alert("Please contact a bank officer or request support to reset your password.");
+        }
+
+        function logout() {
+            document.getElementById("bankScreen").style.display = "none";
+            document.getElementById("loginScreen").style.display = "block";
+            document.getElementById("loginUsername").value = "";
+            document.getElementById("loginPassword").value = "";
+            document.getElementById("result").innerText = "";
+        }
+    </script>
+</body>
+</html>
